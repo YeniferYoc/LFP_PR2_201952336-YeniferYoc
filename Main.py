@@ -180,12 +180,12 @@ class Todo():
         yscrollbar = Scrollbar(self.frame)
         yscrollbar.grid(column=1, row=0, sticky=N+S)
 
-        canvas = Canvas(self.frame, bd=0, yscrollcommand=yscrollbar.set)
+        canvas = Canvas(self.frame, bd=0, yscrollcommand=yscrollbar.set,width=585, height=500)
         canvas.grid(column=0, row=0, sticky=N+S+E+W)
 
         yscrollbar.config(command=canvas.yview)
 
-        self.frame = Frame(canvas, borderwidth=2, relief=SUNKEN, background="light gray")
+        self.frame = Frame(canvas, borderwidth=2, relief=SUNKEN, background="light gray",width=585, height=500)
         canvas.create_window(4, 4, window=self.frame, anchor='nw')
         self.frame.bind("<Configure>", _on_frame_configure)
 

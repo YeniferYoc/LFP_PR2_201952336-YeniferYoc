@@ -137,13 +137,24 @@ class Analizador_Lexico():
                         #print(i)
                         continue
                     else:
-                        print(i)
-                        print("["+actual+"]")
-                        self.AgregarToken(tipos.DESCONOCIDO)  
-                        if actual == '\n':
+                        #print(i)
+                        #print("["+actual+"]")
+                        self.AgregarToken(tipos.LETRAS)  
+                        if actual == ' ':
+                            self.columna +=1
+                            self.estado = 1
+                            #continue
+                        elif actual == '\n':
                             self.fila += 1
                             self.estado = 1
                             self.columna = 1
+                            
+                        elif actual =='\r':
+                            self.estado = 1
+                            
+                        elif actual == '\t':
+                            self.columna += 5
+                            self.estado = 1
                             continue
                         elif actual == '>':
                             self.columna +=1
@@ -162,14 +173,9 @@ class Analizador_Lexico():
                             continue
                         else:
                             self.lexema += actual
-                            self.AgregarToken(tipos.DESCONOCIDO)
                             self.columna += 1
-                            self.error = False
-                            print("ERROR")
-                            continue
-                        i -= 1
-                        print(i)
-                        continue
+                            self.AgregarToken(tipos.DESCONOCIDO)
+                        continue 
             
             #ESTADO PARA MANEJAR NUMEROS
             elif self.estado == 3:
@@ -180,6 +186,7 @@ class Analizador_Lexico():
                     continue
 
                 else:
+                    self.AgregarToken(tipos.NUMERO)
                     if actual == '-':
                             self.lexema += actual
                             self.columna += 1
@@ -200,8 +207,26 @@ class Analizador_Lexico():
                             self.columna += 1
                             self.AgregarToken(tipos.DIAGONAL)
                             continue
+                    elif actual == ',':
+                            self.lexema += actual
+                            self.columna += 1
+                            self.AgregarToken(tipos.COMA)
+                            continue
+                    elif actual == '\n':
+                            self.fila += 1
+                            self.estado = 1
+                            self.columna = 1
+                            continue
+                    elif actual == ' ':
+                            self.estado = 1
+                            self.columna += 1
+                            continue
+                    elif actual == '\t':
+                            self.estado = 1
+                            self.columna += 5
+                            continue
                     else:
-                        self.lexema = actual
+                        self.lexema += actual
                         self.columna += 1
                         self.AgregarToken(tipos.DESCONOCIDO)
                     continue 
@@ -246,7 +271,7 @@ class Analizador_Lexico():
         self.estado = 1
         
     def RESERVADA(self):
-        entrada = self.lexema.upper() #convertir todo a minuscula
+        entrada = self.lexema #LENGUAJE CASE SENSITIVE 
         si_es = False
         palabras_reservadas = ["RESULTADO","VS","TEMPORADA","JORNADA","GOLES", "LOCAL", "VISITANTE", "TOTAL", "TABLA","PARTIDOS", "TOP","SUPERIOR", "INFERIOR", "ADIOS", "f", "ji","jf"]
         
