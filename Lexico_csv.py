@@ -33,6 +33,8 @@ class Analizador_Lexico():
             if self.estado == 1:
                 #print("entro"+str(i))
                 if actual.isalpha():
+                    print('letra')
+                    print(actual)
                     #print(actual)
                     self.estado = 4
                     self.columna += 1
@@ -44,6 +46,7 @@ class Analizador_Lexico():
                     self.lexema += actual
                     continue
                 elif actual == '"':
+                    print('cadena')
                     self.estado = 5
                     self.columna += 1
                     continue
@@ -112,7 +115,7 @@ class Analizador_Lexico():
                     continue
                 else:
                     if self.RESERVADA():
-                        self.AgregarToken(tipos.PALABRA_RESERVADA)
+                        
                         if actual == '<':
                             self.lexema += actual
                             self.columna += 1
@@ -234,6 +237,7 @@ class Analizador_Lexico():
             #ESTADO DE CADENAS
             elif self.estado == 5:
                 if actual != '"':
+                    print(actual)
                     self.estado = 5
                     self.columna +=1
                     self.lexema += actual
@@ -272,13 +276,63 @@ class Analizador_Lexico():
         
     def RESERVADA(self):
         entrada = self.lexema #LENGUAJE CASE SENSITIVE 
-        si_es = False
+        
         palabras_reservadas = ["RESULTADO","VS","TEMPORADA","JORNADA","GOLES", "LOCAL", "VISITANTE", "TOTAL", "TABLA","PARTIDOS", "TOP","SUPERIOR", "INFERIOR", "ADIOS", "f", "ji","jf"]
+        tipos = Token("lexema", -1, -1, -1)
+        if entrada == 'RESULTADO':
+            self.AgregarToken(tipos.RESULTADO)
+            return True
+        elif entrada == 'VS':
+            self.AgregarToken(tipos.VS)
+            return True
+        elif entrada == 'TEMPORADA':
+            self.AgregarToken(tipos.TEMPORADA)
+            return True
+        elif entrada == 'JORNADA':
+            self.AgregarToken(tipos.JORNADA)
+            return True
+        elif entrada == 'f':
+            self.AgregarToken(tipos.F)
+            return True
+        elif entrada == 'GOLES':
+            self.AgregarToken(tipos.GOLES)
+            return True
+        elif entrada == 'LOCAL':
+            self.AgregarToken(tipos.LOCAL)
+            return True
+        elif entrada == 'VISITANTE':
+            self.AgregarToken(tipos.VISITANTE)
+            return True
+        elif entrada == 'TOTAL':
+            self.AgregarToken(tipos.TOTAL)
+            return True
+        elif entrada == 'TABLA':
+            self.AgregarToken(tipos.TABLA)
+            return True
+        elif entrada == 'PARTIDOS':
+            self.AgregarToken(tipos.PARTIDOS)
+            return True
+        elif entrada == 'ji':
+            self.AgregarToken(tipos.JI)
+            return True
+        elif entrada == 'jf':
+            self.AgregarToken(tipos.JF)
+            return True
+        elif entrada == 'TOP':
+            self.AgregarToken(tipos.TOP)
+            return True
+        elif entrada == 'SUPERIOR':
+            self.AgregarToken(tipos.INFERIOR)
+            return True
+        elif entrada == 'n':
+            self.AgregarToken(tipos.N)
+            return True
+        elif entrada == 'ADIOS':
+            self.AgregarToken(tipos.ADIOS)
+            return True
         
-        if entrada in palabras_reservadas:
-            si_es = True
         
-        return si_es
+        return False
 
     def Imprimir(self):
         print("---------------------------------------------LISTA DE TOKENS ---------------------------------------------")

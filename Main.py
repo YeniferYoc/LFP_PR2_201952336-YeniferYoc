@@ -22,8 +22,9 @@ class Todo():
         self.contenido = ""
         self.lexico_conte = Analizador_Lexico()
         self.general_tokens = []
+        self.fil = 0
 
-        '''archi1=open('LaLigaBot-LFP.csv', "r", encoding="utf-8")
+        archi1=open('LaLigaBot-LFP.csv', "r", encoding="utf-8")
         self.contenido=archi1.read()
         archi1.close()
         self.contenido = self.contenido.replace(" ","")
@@ -117,7 +118,7 @@ class Todo():
             elemento.dar_todo()
             cont +=1
         print("")
-        print(cont)'''
+        print(cont)
                                                             
 
 
@@ -128,6 +129,7 @@ class Todo():
         self.ventana_principal.title("La Liga Bot")
         self.ventana_principal.geometry("850x575")
         self.ventana_principal.configure(bg="cyan")
+        self.ventana_principal.resizable(False, False)
 
        
 
@@ -173,7 +175,7 @@ class Todo():
 
         def _on_frame_configure(self, event=None):
             canvas.configure(scrollregion=canvas.bbox("all"))
-        self.frame = Frame(self.ventana_principal, borderwidth=2, relief=SUNKEN, background="light gray")
+        self.frame = Frame(self.ventana_principal, borderwidth=2, relief=SUNKEN, background="white")
         self.frame.grid(column=0, row=0, sticky=N+S+E+W)
 
 
@@ -184,11 +186,16 @@ class Todo():
         canvas.grid(column=0, row=0, sticky=N+S+E+W)
 
         yscrollbar.config(command=canvas.yview)
+        
 
-        self.frame = Frame(canvas, borderwidth=2, relief=SUNKEN, background="light gray",width=585, height=500)
+        self.frame = Frame(canvas, borderwidth=2, relief=SUNKEN, background="white",width=585, height=500)
         canvas.create_window(4, 4, window=self.frame, anchor='nw')
         self.frame.bind("<Configure>", _on_frame_configure)
 
+
+        label_entrada = ttk.Label(self.frame, text="Bienvenido a la Liga Bot, Ingrese un comando", background="light gray",font=("Comic Sans MS", 15,"bold"))
+        label_entrada.grid(column=1, row=self.fil, sticky=W)
+        self.fil += 1
         
         '''self.mycanvas=tk.Canvas(self.ventana_principal, width=600, height=500, background="white")
         self.mycanvas.place(x = 6,y =5)'''
@@ -267,68 +274,44 @@ class Todo():
             self.ventana_reportes.mainloop()
         
         if opcion == 7:
-            '''entrada = ''
+            entrada = ''
             
             self.lexico_instruccion.tokens = []
             self.lexico_instruccion.tokens_bien = []
             self.lexico_instruccion.tokens_errorres = []
             entrada = self.caja_texto.get()
-            self.caja_texto.delete(0, tkinter.END)'''
+            self.caja_texto.delete(0, tkinter.END)
+            
+            label_usu = ttk.Label(self.frame, text=entrada, background="light green",font=("Comic Sans MS", 15,"bold"))
+            label_usu.grid(column=1, row=self.fil, sticky=W, pady=10)
+            self.fil += 1
+
             
 
-            for i in range(30):
+            label_res = ttk.Label(self.frame, text="This is a label "+str(self.fil), background="light gray",font=("Comic Sans MS", 15,"bold"))
+            label_res.grid(column=1, row=self.fil, sticky=E, pady=10)
+            self.fil += 1
+            
+
+            '''for i in range(30):
                 label = ttk.Label(self.frame, text="This is a label "+str(i))
                 label.grid(column=1, row=i, sticky=W)
 
                 text = ttk.Entry(self.frame, textvariable="text")
-                text.grid(column=2, row=i, sticky=W)
-
-            '''etiqueta = tkinter.Label(self.mycanvas, text = "hla", background="gray",font=("Comic Sans MS", 15,"bold"))
-            etiqueta.place(x=400, y =10)
-            etiqueta2 = tkinter.Label(self.mycanvas, text = "hla", background="gray",font=("Comic Sans MS", 15,"bold"))
-            etiqueta2.place(x=400, y =60)
-            etiqueta3 = tkinter.Label(self.mycanvas, text = "hla", background="gray",font=("Comic Sans MS", 15,"bold"))
-            etiqueta3.place(x=400, y =110)
-            etiqueta4 = tkinter.Label(self.mycanvas, text = "hla", background="gray",font=("Comic Sans MS", 15,"bold"))
-            etiqueta4.place(x=400, y =160)
-            etiqueta5 = tkinter.Label(self.mycanvas, text = "hla", background="gray",font=("Comic Sans MS", 15,"bold"))
-            etiqueta5.place(x=400, y =210)
-            etiqueta26 = tkinter.Label(self.mycanvas, text = "hla", background="gray",font=("Comic Sans MS", 15,"bold"))
-            etiqueta26.place(x=400, y =260)
-            etiqueta37 = tkinter.Label(self.mycanvas, text = "hla", background="gray",font=("Comic Sans MS", 15,"bold"))
-            etiqueta37.place(x=400, y =310)
-            etiqueta48 = tkinter.Label(self.mycanvas, text = "hla", background="gray",font=("Comic Sans MS", 15,"bold"))
-            etiqueta48.place(x=400, y =360)
-            etiqueta59 = tkinter.Label(self.mycanvas, text = "hla", background="gray",font=("Comic Sans MS", 15,"bold"))
-            etiqueta59.place(x=400, y =410)
-            nombre = tkinter.Label(self.mycanvas, text = "hla", background="gray",font=("Comic Sans MS", 15,"bold"))
-            nombre.place(x=400, y =460)'''
-            '''self.mycanvas.create_rectangle(175,10, 500,65, outline="black", fill = "green")
-            self.mycanvas.create_text(160,10,text = "hola", fill = "white",font=("Comic Sans MS", 15,"bold"))
-
-            self.mycanvas.create_rectangle(175,10, 500,65, outline="black", fill = "green")
-            self.mycanvas.create_text(160,10,text = "hola", fill = "white",font=("Comic Sans MS", 15,"bold"))'''
+                text.grid(column=2, row=i, sticky=W)'''
 
 
             
-            '''self.lexico_instruccion.analisis(entrada)
+            self.lexico_instruccion.analisis(entrada)
             self.lexico_instruccion.Imprimir()
             #LLENAMOS EL ARREGLO GENERAL 
             self.general_tokens = self.lexico_instruccion.tokens
             for token in self.general_tokens:
-                tipos = Token("lexema", -1, -1, -1)
                 print("LEXEMA: "+token.getLexema()," TIPO: ",token.getTipo(),' LINEA: ',token.getFila(), ', COLUMNA: ',token.getColumna())
                 print("---------------------------------------------------------------------")
-    '''
-
-
-
-
-
-
-            
-  
     
+
+
     
     def destruir_ventana(self, ventana):
         ventana.destroy()
