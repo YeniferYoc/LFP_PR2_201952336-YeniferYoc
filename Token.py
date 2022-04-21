@@ -33,6 +33,7 @@ class Token():
     INFERIOR = 27'''
     N = 28
     ADIOS = 29
+    IDENTIFICADOR = 30
 
     def __init__(self,lexema,tipo,fila,columna):
         self.lexema_valido = lexema
@@ -86,12 +87,6 @@ class Token():
             return "F"
         elif self.tipo == self.GOLES:
             return "GOLES"
-        elif self.tipo == self.LOCAL:
-            return "LOCAL"
-        elif self.tipo == self.VISITANTE:
-            return 'VISITANTE'
-        elif self.tipo == self.TOTAL:
-            return 'TOTAL'
         elif self.tipo == self.MENOR_QUE:
             return "TABLA"
         elif self.tipo == self.ULTIMO:
@@ -102,11 +97,9 @@ class Token():
             return 'JF'
         elif self.tipo == self.TOP:
             return 'TOP'
-        elif self.tipo == self.SUPERIOR:
-            return 'SUPERIOR'
-        elif self.tipo == self.INFERIOR:
-            return "INFERIOR"
         elif self.tipo == self.N:
             return "N"
         elif self.tipo == self.ADIOS:
             return "ADIOS"
+        elif self.tipo == self.IDENTIFICADOR:
+            return "IDENTIFICADOR"

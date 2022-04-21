@@ -5,5 +5,6 @@ class Fecha():
         self.año = año
 
     def dar_todo(self):
-        print(str(self.dia)+" / "+str(self.mes)+" / "+str(self.año))
+        cadena = (str(self.dia)+"/"+str(self.mes)+"/"+str(self.año))
+        return cadena
         

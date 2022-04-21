@@ -1,3 +1,4 @@
+from gc import disable
 import tkinter
 from tkinter import *
 from tkinter.ttk import LabelFrame
@@ -14,6 +15,8 @@ from Fecha import *
 from tkinter import ttk
 import tkinter as tk
 from Equipo import *
+from Error_sintatico import *
+from Sintactico import Sintactico
 #import ventana_analizar
 #from  ventana_reportes import *
 class Todo():
@@ -22,6 +25,7 @@ class Todo():
         self.contenido = ""
         self.lexico_conte = Analizador_Lexico()
         self.general_tokens = []
+        self.errores_sintac_general = []
         self.fil = 0
 
         archi1=open('LaLigaBot-LFP.csv', "r", encoding="utf-8")
@@ -35,7 +39,7 @@ class Todo():
         long_arr = len(self.lexico_conte.tokens_bien)
         print(long_arr)
         self.tipos = Token("lexema", -1, -1, -1)
-        arreglo_elementos = []
+        self.arreglo_elementos = []
         contador = 0
         contador2 = 0
         incrementa = 19
@@ -44,8 +48,6 @@ class Todo():
         self.lexico_instruccion = Analizador_Lexico()
 
         for i in range(0,long_arr,incrementa+contador+contador2):
-            print("entro al for")
-            print(i)
             if self.lexico_conte.tokens_bien[i].tipo == self.tipos.NUMERO:
                 print("ENCONTRE DIA")
                 #print(self.lexico_conte.tokens_bien[i].lexema_valido)
@@ -110,11 +112,11 @@ class Todo():
                                                             nombre1 =''
                                                             nombre2 = ''
                                                             elemento_nuevo = Elemento(fecha_nueva, inicio, fin,jornada, equipo_nuevo, equipo_nuevo2)
-                                                            arreglo_elementos.append(elemento_nuevo)
+                                                            self.arreglo_elementos.append(elemento_nuevo)
                                                             incrementa = i+12+contador+1+contador2+3
                                                             print(incrementa)
         cont = 0
-        for elemento in arreglo_elementos:
+        for elemento in self.arreglo_elementos:
             elemento.dar_todo()
             cont +=1
         print("")
@@ -186,6 +188,8 @@ class Todo():
         canvas.grid(column=0, row=0, sticky=N+S+E+W)
 
         yscrollbar.config(command=canvas.yview)
+
+
         
 
         self.frame = Frame(canvas, borderwidth=2, relief=SUNKEN, background="white",width=585, height=500)
@@ -274,6 +278,7 @@ class Todo():
             self.ventana_reportes.mainloop()
         
         if opcion == 7:
+            #LOS DATOS DEBEN REESTABLECERSE CADA VEZ QUE SE PRESIONE ENVIAR
             entrada = ''
             
             self.lexico_instruccion.tokens = []
@@ -286,35 +291,231 @@ class Todo():
             label_usu.grid(column=1, row=self.fil, sticky=W, pady=10)
             self.fil += 1
 
-            
-
-            label_res = ttk.Label(self.frame, text="This is a label "+str(self.fil), background="light gray",font=("Comic Sans MS", 15,"bold"))
-            label_res.grid(column=1, row=self.fil, sticky=E, pady=10)
-            self.fil += 1
-            
-
-            '''for i in range(30):
-                label = ttk.Label(self.frame, text="This is a label "+str(i))
-                label.grid(column=1, row=i, sticky=W)
-
-                text = ttk.Entry(self.frame, textvariable="text")
-                text.grid(column=2, row=i, sticky=W)'''
-
-
-            
+            #QEU SE ANALICE LA INSTRUCCON INTRODUCIDA        
             self.lexico_instruccion.analisis(entrada)
             self.lexico_instruccion.Imprimir()
-            #LLENAMOS EL ARREGLO GENERAL 
-            self.general_tokens = self.lexico_instruccion.tokens
+            #LLENAMOS EL ARREGLO GENERAL
+            for token in self.lexico_instruccion.tokens:
+                self.general_tokens.append(token)
+            #YA QUE EL PROGRAMA DEBE INTENTAR RECUPERARSE DE LOS ERRORES ENTONCES LOS ERRORES LEXICOS NO IMPORTAN
+            print("SINTACTICO")
+            sintactico = Sintactico(self.lexico_instruccion.tokens_bien)
+            
+            for erro in sintactico.lista_err_S:
+                erro.dar_todo()
+                print("---------------------------------------------------------------------")
+                self.errores_sintac_general.append(erro)
+            if sintactico.errorSintactico == True:
+                label_res = ttk.Label(self.frame, text="LO SENTIMOS, ERROR SINTACTICO DETECTADO", background="light gray",font=("Comic Sans MS", 15,"bold"))
+                label_res.grid(column=1, row=self.fil, sticky=E, pady=10)
+                self.fil += 1
+            else:#SINO HAY ERRORES SINTACTICOS ENTONCES QE SE EJECUTE LA INSTRUCCION  
+                respuesta = self.Ejecutar_instruccion(self.lexico_instruccion.tokens_bien, self.arreglo_elementos)
+                print(respuesta)
+
+                label_res = ttk.Label(self.frame, text=respuesta, background="light gray",font=("Comic Sans MS", 15,"bold"))
+                label_res.grid(column=1, row=self.fil, sticky=E, pady=10)
+                
+                self.fil += 1
+            print("ARREGLO GENERAL DE TOKENS ")
             for token in self.general_tokens:
                 print("LEXEMA: "+token.getLexema()," TIPO: ",token.getTipo(),' LINEA: ',token.getFila(), ', COLUMNA: ',token.getColumna())
                 print("---------------------------------------------------------------------")
-    
+            
+            
 
 
-    
+    def Ejecutar_instruccion(self, lista, elementos_arr):
+        #VALIDAMOS A CASO DEBE IR 
+        respuesta = ''
+        
+        if lista[0].tipo == self.tipos.RESULTADO:
+            for i in range(len(lista)):
+                if lista[i].tipo == self.tipos.RESULTADO:
+                    if lista[i+1].tipo == self.tipos.CADENA:
+                        if lista[i+2].tipo == self.tipos.VS:
+                            if lista[i+3].tipo == self.tipos.CADENA:
+                                if lista[i+4].tipo == self.tipos.TEMPORADA:
+                                    if lista[i+5].tipo == self.tipos.MENOR_QUE:
+                                        if lista[i+6].tipo == self.tipos.NUMERO:
+                                            digitos = int(lista[i+6].lexema_valido)
+                                            #SE VALIDA QUE EL NUEMRO TENGA 4 DIGITOS 
+                                            if digitos < 1000: 
+                                                respuesta = 'HA OCURRIDO UN ERROR ->>'+ str(digitos)+' EL AÑO NO PUEDE TENER MENOS DE 4 DIGITOS'
+                                            else:
+                                                if lista[i+7].tipo == self.tipos.GUION:
+                                                    if lista[i+8].tipo == self.tipos.NUMERO:
+                                                        digitos = int(lista[i+8].lexema_valido)
+                                                        if digitos < 1000: 
+                                                            respuesta = 'HA OCURRIDO UN ERROR ->>'+ str(digitos)+' EL AÑO NO PUEDE TENER MENOS DE 4 DIGITOS'
+                                                        else:
+                                                            if lista[i+9].tipo == self.tipos.MAYOR_QUE:
+                                                                print("llego")#RESULTADO "AD Almería" VS "Español" TEMPORADA <1979 - 1980>
+                                                                ini = int(lista[i+6].lexema_valido)
+                                                                print(ini)
+                                                                
+                                                                finn = int(lista[i+8].lexema_valido)
+                                                                print(finn)
+                                                                equi1 = str(lista[i+1].lexema_valido)
+                                                                validar_e = equi1.replace(" ","")
+                                                                equi2 = str(lista[i+3].lexema_valido)
+                                                                vaidar_2 = equi2.replace(" ","")
+                                                                si_hay_equipos = False
+                                                                si_hay_temp = False
+                                                                for elemento in elementos_arr:
+                                                                    print(str(elemento.inicio)+"iii")
+                                                                    print(str(elemento.fin)+'fin')
+                                                                    inicio_t = int(elemento.inicio)
+                                                                    final_t = int(elemento.fin)
+                                                                    if ini == inicio_t and finn == final_t:
+                                                                        print("ENCONTRO TEMP")
+                                                                        si_hay_temp = True
+                                                                        if validar_e.upper() == elemento.equipo.nombre.upper():
+                                                                            if vaidar_2.upper() == elemento.equipo2.nombre.upper():
+                                                                                si_hay_equipos = True
+                                                                                goles1 = elemento.equipo.goles
+                                                                                goles2 = elemento.equipo2.goles
+                                                                                respuesta = 'El resultado de este partido fue: '+ str(equi1)+' '+str(goles1)+' - ' + str(equi2)+' '+str(goles2)
+                                                                            
+                                                                        elif validar_e.upper() == elemento.equipo2.nombre.upper():
+                                                                            if vaidar_2.upper() == elemento.equipo.nombre.upper():
+                                                                                si_hay_equipos = True
+                                                                                goles1 = elemento.equipo.goles
+                                                                                goles2 = elemento.equipo2.goles
+                                                                                respuesta = 'El resultado de este partido fue: '+ str(equi1)+' '+str(goles2)+' - ' + str(equi2)+' '+str(goles1)
+                                                                if si_hay_temp == True:
+                                                                    if si_hay_equipos == True:
+                                                                        pass
+                                                                    else:
+                                                                        respuesta = 'ESTOS EQUIPOS NO SE ENFRENTARON EN ESTA TEMPORADA'
+                                                                else: 
+                                                                    respuesta = 'ESTA TEMPORADA NO EXISTE'                
+            return respuesta
+        
+        elif lista[0].tipo == self.tipos.JORNADA:
+            arreglo_partidos = []
+            for i in range(len(lista)):
+                if lista[i].tipo == self.tipos.JORNADA:
+                    if lista[i+1].tipo == self.tipos.NUMERO:
+                        digitos = int(lista[i+1].lexema_valido)
+                        #SE VALIDA QUE EL NUEMRO TENGA 2 DIGITOS 
+                        if digitos > 100: 
+                            respuesta = 'HA OCURRIDO UN ERROR ->>'+ str(digitos)+'LA JORNADA DEBE TENER 2 DIGITOS MAXIMO'
+                        else:
+                                if lista[i+2].tipo == self.tipos.TEMPORADA:
+                                    if lista[i+3].tipo == self.tipos.MENOR_QUE:
+                                        if lista[i+4].tipo == self.tipos.NUMERO:
+                                            digitos = int(lista[i+4].lexema_valido)
+                                            #SE VALIDA QUE EL NUEMRO TENGA 4 DIGITOS 
+                                            if digitos < 1000: 
+                                                respuesta = 'HA OCURRIDO UN ERROR ->>'+ str(digitos)+' EL AÑO NO PUEDE TENER MENOS DE 4 DIGITOS'
+                                            else:
+                                                if lista[i+5].tipo == self.tipos.GUION:
+                                                    if lista[i+6].tipo == self.tipos.NUMERO:
+                                                        digitos = int(lista[i+6].lexema_valido)
+                                                        if digitos < 1000: 
+                                                            respuesta = 'HA OCURRIDO UN ERROR ->>'+ str(digitos)+' EL AÑO NO PUEDE TENER MENOS DE 4 DIGITOS'
+                                                        else:
+                                                            if lista[i+7].tipo == self.tipos.MAYOR_QUE:
+                                                                nombre_archivo = ''
+                                                                if lista[i+8].tipo != None:
+                                                                    print("si debe haber archivo")
+                                                                    if lista[i+8].tipo == self.tipos.GUION:
+                                                                        if lista[i+9].tipo == self.tipos.F:
+                                                                            if lista[i+10].tipo == self.tipos.LETRAS:
+                                                                                nombre_archivo = str(lista[i+10].lexema_valido)
+                                                                                
+                                                                else:
+                                                                    nombre_archivo = 'jornada'
+                                                                print("llego")#RESULTADO "AD Almería" VS "Español" TEMPORADA <1979 - 1980>
+                                                                jornad = int(lista[i+1].lexema_valido)
+                                                                ini = int(lista[i+4].lexema_valido)
+                                                                print(ini)
+                                                                
+                                                                finn = int(lista[i+6].lexema_valido)
+                                                                print(finn)
+                                                                si_hay_jorn = False
+                                                                si_hay_temp = False
+                                                                for elemento in elementos_arr:
+                                                                    '''print(str(elemento.inicio)+"iii")
+                                                                    print(str(elemento.fin)+'fin')'''
+                                                                    inicio_t = int(elemento.inicio)
+                                                                    final_t = int(elemento.fin)
+                                                                    jor = int(elemento.jornada)
+
+                                                                    if ini == inicio_t and finn == final_t:
+                                                                        print("ENCONTRO TEMP")
+                                                                        si_hay_temp = True
+                                                                        if jornad == jor:
+                                                                                si_hay_jorn = True
+                                                                                arreglo_partidos.append(elemento)
+                                                                                respuesta = 'Generando los resultados jornada '+ str(jornad)+' temporada '+str(ini)+' - ' + str(finn)
+                                                                            
+                                                                        
+                                                                if si_hay_temp == True:
+                                                                    if si_hay_jorn == True:
+                                                                        self.generar_partidos_jor(arreglo_partidos,nombre_archivo,jornad)
+                                                                    else:
+                                                                        respuesta = 'ESTA JORNADA NO EXISTE EN ESTA TEMPORADA'
+                                                                else: 
+                                                                    respuesta = 'ESTA TEMPORADA NO EXISTE'                
+            return respuesta
+ 
+        elif lista[0].tipo == self.tipos.GOLES:
+            return 'GOLES'  
+        elif lista[0].tipo == self.tipos.TABLA:
+            return 'TABLA'
+        elif lista[0].tipo == self.tipos.PARTIDOS:
+            return 'PARTIDOS'  
+        elif lista[0].tipo == self.tipos.TOP:
+            return 'TOP'
+        elif lista[0].tipo == self.tipos.ADIOS:
+            self.caja_texto.configure(state='disabled')
+            return 'ADIOS' 
+        '''for i in range(len(lista)):
+            if self.lexico_conte.tokens_bien[i].tipo == self.tipos.NUMERO:
+                pass'''
     def destruir_ventana(self, ventana):
         ventana.destroy()
+    
+    def generar_partidos_jor(self, elementos, nombre, jornada):
+        nombre = nombre + ".html"
+        file = open(nombre, "w")
+        file.write("<HTML>")
+        file.write("<HEAD><TITLE>PARTIDOS DE LA JORNADA "+str(jornada)+"</TITLE>")
+        file.write("<link rel=\"stylesheet\"  href=\"estilos.css\">")
+        file.write("</head>")
+        file.write("<body>")
+        file.write("<CENTER><H1><b>----------------------- PARTIDOS DE LA JORNADA &nbsp &nbsp"+str(jornada)+" -----------------------</b></H1>")
+        file.write("</CENTER>")
+        file.write("<img src=\"2d.gif\" width=\"300\" height=\"200\" align=right>")
+        file.write("<form action=\"\"> ")
+        file.write("<p><b>&nbsp &nbsp &nbsp &nbsp &nbsp &nbspYENIFER ESTER YOC LARIOS &nbsp &nbsp -------->&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 201952336 </b></p>")
+        file.write("<br>")
+        file.write("<div  id = \"main-container\" >")
+        file.write("<b>")
+        file.write("<table>")
+        file.write("<thead>")
+        file.write("<tr>")
+        file.write("<th> FECHA   </th><th>EQUIPO 1</th><th>GOLES</th><th>EQUIPO 2</th><th>GOLES</th>")
+        file.write("</tr>")
+        file.write("</thead>")#JORNADA 1 TEMPORADA <1979-1980>
+                
+        for elemento in elementos:
+                    file.write("<tr><font size = 12 color = \"white\" >")
+                    file.write("<td> "+str(elemento.fecha.dar_todo())+"</td><td>"+str(elemento.equipo.nombre)+"</td><td>"+str(elemento.equipo.goles)+"</td><td>"+str(elemento.equipo2.nombre)+"</td><td>"+str(elemento.equipo2.goles)+"</td>")
+                    file.write("<font size = 12></tr>")
+                
+        file.write("</b>")
+        file.write("</table>")
+        file.write("</div>")
+        file.write("</BODY>\r\n"+ "</HTML>");			
+        file.close()
+        startfile(nombre)
+        print("")
+        print("SE HA CREADO EL REPORTE CON EXITO")
+        print("")   
+
 
     def opciones_reporte(self, opcion):
         if(opcion == 1):
@@ -353,7 +554,8 @@ class Todo():
     
         
 
-def main(): #METODO PRINCIPAL QUE INVOCA AL MENU2 
+def main(): #METODO PRINCIPAL QUE INVOCA AL MENU2  TOP INFERIOR TEMPORADA <1999-2000> -n 3
+
    app = Todo()
 
 if __name__ == "__main__":

@@ -1,0 +1,103 @@
+*{
+	
+	margin: 0;
+	padding: 0;
+	font-family: Comic Sans MS;
+	box-sizing: border-box;
+	
+}
+
+header{ 
+	width: 100%;
+	height: 53px;
+	background:white;
+	color:black;
+
+}
+
+.menuyeni{
+	width: 100%;
+	height: 50px;
+	display: flex;
+}
+
+.menuyeni ul{
+	display: flex;
+	margin: auto;
+
+}
+
+.menuyeni li{
+	list-style: none;
+	padding: 15px 25px;
+}
+
+.menuyeni li:hover{
+	background:rgba(0,0,0,0.3);
+	color:white;
+	cursor: pointer;
+	transition: all 300ms;
+}
+
+.menuyeni ul li ul{
+	*display: none;
+	flex-direction: column;
+	position: absolute;
+	background:#FF7F00;
+	margin-top: 15px;
+transform:rotateX(280deg) scale(0); 
+transition: all 1s;
+box-shadow: 7px 7px 0px 0px black; 
+border-radius: 5px;
+
+
+}
+
+.menuyeni ul li:hover > ul{
+	color: black;
+	transform: rotateX(0deg) scale(1);
+	transition:  all 1s;
+}
+
+.menuyeni ul li ul:before{
+	content: '';
+	width: 0;
+	height: 0;
+	border-right: 10px solid transparent;
+	border-left: 10px solid transparent;
+border-bottom: 8px solid  #FF7F00;
+position: absolute;
+margin-top:-6px;
+margin-left: 10px;
+
+}
+
+.menuyeni ul li ul li ul li {
+	position: relative;
+
+}
+
+
+
+.menuyeni ul li ul li ul  {
+	right: -120px; 
+	color: black;
+	top: 37px; 
+	background:#C0C0C0;
+
+}
+
+
+.menuyeni ul li ul li ul:before  {
+position: absolute;
+margin-top:18px;
+margin-left: -13px;
+border-bottom: 8px solid  #C0C0C0;
+transform: rotate(-90deg);
+}
+
+
+
+
+
+

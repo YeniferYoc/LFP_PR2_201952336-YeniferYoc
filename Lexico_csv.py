@@ -33,8 +33,8 @@ class Analizador_Lexico():
             if self.estado == 1:
                 #print("entro"+str(i))
                 if actual.isalpha():
-                    print('letra')
-                    print(actual)
+                    #print('letra')
+                    #print(actual)
                     #print(actual)
                     self.estado = 4
                     self.columna += 1
@@ -46,7 +46,7 @@ class Analizador_Lexico():
                     self.lexema += actual
                     continue
                 elif actual == '"':
-                    print('cadena')
+                    #print('cadena')
                     self.estado = 5
                     self.columna += 1
                     continue
@@ -109,6 +109,16 @@ class Analizador_Lexico():
                 #print("entro")
                 #print(actual)
                 if actual.isalpha():
+                    self.estado = 4
+                    self.columna += 1
+                    self.lexema += actual
+                    continue
+                elif actual.isdigit():
+                    self.estado = 4
+                    self.columna += 1
+                    self.lexema += actual
+                    continue
+                elif actual == '_':
                     self.estado = 4
                     self.columna += 1
                     self.lexema += actual
@@ -267,10 +277,11 @@ class Analizador_Lexico():
         nuevo_token = Token(self.lexema, tipo, self.fila, self.columna)
         tipos = Token("lexema", -1, -1, -1)
         if nuevo_token.tipo != tipos.DESCONOCIDO:
-            self.tokens_bien.append(nuevo_token)
+            
+            self.tokens.append(nuevo_token)
         else:
             self.tokens_errorres.append(nuevo_token)
-        self.tokens.append(nuevo_token)
+        self.tokens_bien.append(nuevo_token)
         self.lexema = ""
         self.estado = 1
         
@@ -297,15 +308,6 @@ class Analizador_Lexico():
         elif entrada == 'GOLES':
             self.AgregarToken(tipos.GOLES)
             return True
-        elif entrada == 'LOCAL':
-            self.AgregarToken(tipos.LOCAL)
-            return True
-        elif entrada == 'VISITANTE':
-            self.AgregarToken(tipos.VISITANTE)
-            return True
-        elif entrada == 'TOTAL':
-            self.AgregarToken(tipos.TOTAL)
-            return True
         elif entrada == 'TABLA':
             self.AgregarToken(tipos.TABLA)
             return True
@@ -320,9 +322,6 @@ class Analizador_Lexico():
             return True
         elif entrada == 'TOP':
             self.AgregarToken(tipos.TOP)
-            return True
-        elif entrada == 'SUPERIOR':
-            self.AgregarToken(tipos.INFERIOR)
             return True
         elif entrada == 'n':
             self.AgregarToken(tipos.N)

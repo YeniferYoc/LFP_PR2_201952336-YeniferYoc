@@ -1,0 +1,65 @@
+body{
+background: #FF00FF;
+font-family: Comic Sans MS;
+} 	
+
+
+#main-containeryeni{
+	margin: 150px auto;
+	width: 600px;
+
+}
+table{
+	background-color:#4F2F4F;
+	text-align:  center;
+	border-collapse:  collapse;
+	width: 100%;
+	vertical-align: center;
+}
+th, td{
+	padding: 20px;
+}
+thead{
+	background-color:  #C0C0C0;
+	border-bottom: solid 7px black;
+	color: black;
+
+}
+tr:nth-child(even){
+	background-color: pink;
+}
+tr:hover td{
+	background-color: #C0C0C0;
+
+	color: white;
+}
+
+
+#main-containeryeniester{
+	margin: 150px auto;
+	width: 600px;
+
+}
+table{
+	background-color:  #000080  ;
+	text-align:  center;
+	border-collapse:  collapse;
+	width: 100%;
+}
+th, td{
+	padding: 20px;
+}
+thead{
+	background-color:  #FFFFFF;
+	border-bottom: solid 7px gray;
+	color: black;
+
+}
+tr:nth-child(even){
+	background-color:#C0C0C0;
+}
+tr:hover td{
+	background-color: black;
+
+	color: white;
+}
