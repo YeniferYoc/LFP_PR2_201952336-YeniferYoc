@@ -93,6 +93,7 @@ class Sintactico:
         tipos = Token("lexema", -1, -1, -1)
         self.Match(tipos.GOLES)
         self.Match(tipos.LETRAS)
+        self.Match(tipos.CADENA)
         self.Match(tipos.TEMPORADA)
         self.Match(tipos.MENOR_QUE)
         self.Match(tipos.NUMERO)

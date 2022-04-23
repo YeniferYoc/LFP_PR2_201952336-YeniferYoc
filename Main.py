@@ -101,14 +101,14 @@ class Todo():
                                                             goles1 = int(self.lexico_conte.tokens_bien[i+12+contador+1+contador2+1].lexema_valido)
                                                             goles2 = int(self.lexico_conte.tokens_bien[i+12+contador+1+contador2+3].lexema_valido)
                                                             if goles1 == goles2:
-                                                                equipo_nuevo = Equipo(nombre1, goles1, False)
-                                                                equipo_nuevo2 = Equipo(nombre2, goles2, False)
+                                                                equipo_nuevo = Equipo(nombre1, goles1, False,1)
+                                                                equipo_nuevo2 = Equipo(nombre2, goles2, False,1)
                                                             elif goles1 < goles2:
-                                                                equipo_nuevo = Equipo(nombre1, goles1, False)
-                                                                equipo_nuevo2 = Equipo(nombre2, goles2, True)
+                                                                equipo_nuevo = Equipo(nombre1, goles1, False,0)
+                                                                equipo_nuevo2 = Equipo(nombre2, goles2, True,3)
                                                             else:
-                                                                equipo_nuevo = Equipo(nombre1, goles1, True)
-                                                                equipo_nuevo2 = Equipo(nombre2, goles2, False)
+                                                                equipo_nuevo = Equipo(nombre1, goles1, True,3)
+                                                                equipo_nuevo2 = Equipo(nombre2, goles2, False,0)
                                                             nombre1 =''
                                                             nombre2 = ''
                                                             elemento_nuevo = Elemento(fecha_nueva, inicio, fin,jornada, equipo_nuevo, equipo_nuevo2)
@@ -122,11 +122,7 @@ class Todo():
         print("")
         print(cont)
                                                             
-
-
-                                            
-
-
+        #INTERFAZ GRAFICA
         self.ventana_principal = tkinter.Tk()
         self.ventana_principal.title("La Liga Bot")
         self.ventana_principal.geometry("850x575")
@@ -184,10 +180,14 @@ class Todo():
         yscrollbar = Scrollbar(self.frame)
         yscrollbar.grid(column=1, row=0, sticky=N+S)
 
-        canvas = Canvas(self.frame, bd=0, yscrollcommand=yscrollbar.set,width=585, height=500)
+        hscrollbar = Scrollbar(self.frame, orient=HORIZONTAL)
+        hscrollbar.grid(row=1, column=0, sticky=E+W)
+
+        canvas = Canvas(self.frame, bd=0, yscrollcommand=yscrollbar.set,xscrollcommand=hscrollbar.set,width=585, height=500)
         canvas.grid(column=0, row=0, sticky=N+S+E+W)
 
         yscrollbar.config(command=canvas.yview)
+        hscrollbar.config(command=canvas.xview)
 
 
         
@@ -449,7 +449,7 @@ class Todo():
                                                                         if jornad == jor:
                                                                                 si_hay_jorn = True
                                                                                 arreglo_partidos.append(elemento)
-                                                                                respuesta = 'Generando los resultados jornada '+ str(jornad)+' temporada '+str(ini)+' - ' + str(finn)
+                                                                respuesta = 'Generando los resultados jornada '+ str(jornad)+' temporada '+str(ini)+' - ' + str(finn)
                                                                             
                                                                         
                                                                 if si_hay_temp == True:
@@ -462,11 +462,236 @@ class Todo():
             return respuesta
  
         elif lista[0].tipo == self.tipos.GOLES:
-            return 'GOLES'  
+            for i in range(len(lista)):
+                if lista[i].tipo == self.tipos.GOLES:
+                    if lista[i+1].tipo == self.tipos.LETRAS:
+                        if lista[i+2].tipo == self.tipos.CADENA:
+                                if lista[i+3].tipo == self.tipos.TEMPORADA:
+                                    if lista[i+4].tipo == self.tipos.MENOR_QUE:
+                                        if lista[i+5].tipo == self.tipos.NUMERO:
+                                            digitos = int(lista[i+5].lexema_valido)
+                                            #SE VALIDA QUE EL NUEMRO TENGA 4 DIGITOS 
+                                            if digitos < 1000: 
+                                                respuesta = 'HA OCURRIDO UN ERROR ->>'+ str(digitos)+' EL AÑO NO PUEDE TENER MENOS DE 4 DIGITOS'
+                                            else:
+                                                if lista[i+6].tipo == self.tipos.GUION:
+                                                    if lista[i+7].tipo == self.tipos.NUMERO:
+                                                        digitos = int(lista[i+7].lexema_valido)
+                                                        if digitos < 1000: 
+                                                            respuesta = 'HA OCURRIDO UN ERROR ->>'+ str(digitos)+' EL AÑO NO PUEDE TENER MENOS DE 4 DIGITOS'
+                                                        else:
+                                                            if lista[i+8].tipo == self.tipos.MAYOR_QUE:
+                                                                print("llego")# GOLES TOTAL "Valencia" TEMPORADA <1998-1999>
+                                                                ini = int(lista[i+5].lexema_valido)
+                                                                print(ini)
+                                                                
+                                                                finn = int(lista[i+7].lexema_valido)
+                                                                print(finn)
+                                                                equipo_ = str(lista[i+2].lexema_valido)
+                                                                validar_e = equipo_.replace(" ","")
+                                                                si_hay_equipo = False
+                                                                goles_eq = 0
+                                                                condicion = str(lista[i+1].lexema_valido)
+                                                                si_hay_temp = False
+                                                                for elemento in elementos_arr:
+                                                                    print(str(elemento.inicio)+"iii")
+                                                                    print(str(elemento.fin)+'fin')
+                                                                    inicio_t = int(elemento.inicio)
+                                                                    final_t = int(elemento.fin)
+                                                                    if ini == inicio_t and finn == final_t:
+                                                                        print("ENCONTRO TEMP")
+                                                                        si_hay_temp = True
+                                                                        if condicion.upper() == 'VISITANTE':# GOLES VISITANTE "Barcelona" TEMPORADA <1979-1980>
+                                                                            if validar_e.upper() == elemento.equipo2.nombre.upper():
+                                                                                si_hay_equipo = True
+                                                                                goles_eq += elemento.equipo2.goles
+                                                                
+                                                                        elif condicion.upper() == 'LOCAL':
+                                                                            if validar_e.upper() == elemento.equipo.nombre.upper():
+                                                                                si_hay_equipo = True
+                                                                                goles_eq += elemento.equipo.goles
+
+                                                                        elif condicion.upper() == 'TOTAL':
+                                                                            if validar_e.upper() == elemento.equipo.nombre.upper():
+                                                                                si_hay_equipo = True
+                                                                                goles_eq += elemento.equipo.goles
+                                                                                
+                                                                            elif validar_e.upper() == elemento.equipo2.nombre.upper():
+                                                                                si_hay_equipo = True
+                                                                                goles_eq += elemento.equipo2.goles
+                                                                        
+                                                                if si_hay_temp == True:
+                                                                    if si_hay_equipo == True:
+                                                                       respuesta = 'Los goles anotados por '+str(equipo_)+' en condición '+str(condicion)+' en la temporada '+str(ini)+'-'+str(finn)+' fueron '+str(goles_eq)
+                                                                    else:
+                                                                        respuesta = 'EQUIPO NO ENCONTRADO'
+                                                                else: 
+                                                                    respuesta = 'ESTA TEMPORADA NO EXISTE'                
+            return respuesta
+         
         elif lista[0].tipo == self.tipos.TABLA:
-            return 'TABLA'
+            for i in range(len(lista)):
+                if lista[i].tipo == self.tipos.TABLA:
+                                if lista[i+1].tipo == self.tipos.TEMPORADA:
+                                    if lista[i+2].tipo == self.tipos.MENOR_QUE:
+                                        if lista[i+3].tipo == self.tipos.NUMERO:
+                                            digitos = int(lista[i+3].lexema_valido)
+                                            #SE VALIDA QUE EL NUEMRO TENGA 4 DIGITOS 
+                                            if digitos < 1000: 
+                                                respuesta = 'HA OCURRIDO UN ERROR ->>'+ str(digitos)+' EL AÑO NO PUEDE TENER MENOS DE 4 DIGITOS'
+                                            else:
+                                                if lista[i+4].tipo == self.tipos.GUION:
+                                                    if lista[i+5].tipo == self.tipos.NUMERO:
+                                                        digitos = int(lista[i+5].lexema_valido)
+                                                        if digitos < 1000: 
+                                                            respuesta = 'HA OCURRIDO UN ERROR ->>'+ str(digitos)+' EL AÑO NO PUEDE TENER MENOS DE 4 DIGITOS'
+                                                        else:
+                                                            if lista[i+6].tipo == self.tipos.MAYOR_QUE:
+                                                                nombre_archivo = ''
+                                                                if lista[i+7].tipo != None:
+                                                                    print("si debe haber archivo")
+                                                                    if lista[i+7].tipo == self.tipos.GUION:
+                                                                        if lista[i+8].tipo == self.tipos.F:
+                                                                            if lista[i+9].tipo == self.tipos.LETRAS:
+                                                                                nombre_archivo = str(lista[i+9].lexema_valido)
+                                                                                
+                                                                else:
+                                                                    nombre_archivo = 'temporada'
+
+                                                                print("llego")#RESULTADO "AD Almería" VS "Español" TEMPORADA <1979 - 1980>
+                                                                ini = int(lista[i+3].lexema_valido)
+                                                                print(ini)
+                                                                
+                                                                finn = int(lista[i+5].lexema_valido)
+                                                                print(finn)
+                                                                
+                                                                si_hay_temp = False
+                                                                arreglo_equipos_temp = []
+                                                                arreglo_equipos = []
+                                                                for elemento in elementos_arr:
+                                                                    inicio_t = int(elemento.inicio)
+                                                                    final_t = int(elemento.fin)
+                                                                    if ini == inicio_t and finn == final_t:
+                                                                        print("ENCONTRO TEMP")
+                                                                        si_hay_temp = True
+                                                                        arreglo_equipos.append(elemento)
+                                                                if si_hay_temp == True:
+                                                                    print("ENTRO AL IF ")
+                                                                    arreglo_equipos_temp.append(arreglo_equipos[0].equipo)
+                                                                    arreglo_equipos_temp.append(arreglo_equipos[0].equipo2)
+
+                                                                    for e in range(1, len(arreglo_equipos)):
+                                                                                
+                                                                                equipo1_t = arreglo_equipos[e].equipo.nombre.upper()
+                                                                                equipo2_t = arreglo_equipos[e].equipo2.nombre.upper()
+                                                                                print(equipo1_t)
+                                                                                print(equipo2_t)
+                                                                                bandera_encontre = False
+                                                                                bandera_encontre_2 = False
+                                                                            
+                                                                                for k in range(len(arreglo_equipos_temp)):
+                                                                                    if arreglo_equipos_temp[k].nombre.upper() == equipo1_t:
+                                                                                        agreg = int(arreglo_equipos[e].equipo.puntos)
+                                                                                        bandera_encontre = True
+                                                                                        print(agreg)
+                                                                                        arreglo_equipos_temp[k].puntos += agreg
+                                                                                
+                                                                                    if arreglo_equipos_temp[k].nombre.upper() == equipo2_t:
+                                                                                        bandera_encontre_2 = True
+                                                                                        agreg2 = int(arreglo_equipos[e].equipo2.puntos)
+                                                                                        print(agreg2)
+                                                                                        arreglo_equipos_temp[k].puntos += agreg2
+
+                                                                                if bandera_encontre == False:
+                                                                                    print("agregoss")
+                                                                                    arreglo_equipos_temp.append(arreglo_equipos[e].equipo)
+                                                                                if bandera_encontre_2 == False:
+                                                                                    print("agregoss2")
+                                                                                    arreglo_equipos_temp.append(arreglo_equipos[e].equipo2)
+
+
+                                                                            
+                                                                    print("SALIO DEL FOR")
+                                                                    print(len(arreglo_equipos_temp))  
+                                                                    for m in arreglo_equipos_temp:
+                                                                        print(m.nombre)
+                                                                        print(m.puntos)  
+                                                                            
+                                                                        
+                                                                
+
+                                                                        
+                                                                if si_hay_temp == True:
+                                                                    respuesta = 'Generando archivo de clasificación de temporada '+str(ini)+'-'+str(finn)
+                                                                    ordenado = self.ordenar_puntos(arreglo_equipos_temp)
+                                                                    self.generar_Puntos_temp(ordenado, nombre_archivo, ini, finn)
+
+                                                                else: 
+                                                                    respuesta = 'ESTA TEMPORADA NO EXISTE'                
+            return respuesta
+        
         elif lista[0].tipo == self.tipos.PARTIDOS:
-            return 'PARTIDOS'  
+            for i in range(len(lista)):
+                if lista[i].tipo == self.tipos.RESULTADO:
+                    if lista[i+1].tipo == self.tipos.CADENA:
+                        if lista[i+2].tipo == self.tipos.VS:
+                            if lista[i+3].tipo == self.tipos.CADENA:
+                                if lista[i+4].tipo == self.tipos.TEMPORADA:
+                                    if lista[i+5].tipo == self.tipos.MENOR_QUE:
+                                        if lista[i+6].tipo == self.tipos.NUMERO:
+                                            digitos = int(lista[i+6].lexema_valido)
+                                            #SE VALIDA QUE EL NUEMRO TENGA 4 DIGITOS 
+                                            if digitos < 1000: 
+                                                respuesta = 'HA OCURRIDO UN ERROR ->>'+ str(digitos)+' EL AÑO NO PUEDE TENER MENOS DE 4 DIGITOS'
+                                            else:
+                                                if lista[i+7].tipo == self.tipos.GUION:
+                                                    if lista[i+8].tipo == self.tipos.NUMERO:
+                                                        digitos = int(lista[i+8].lexema_valido)
+                                                        if digitos < 1000: 
+                                                            respuesta = 'HA OCURRIDO UN ERROR ->>'+ str(digitos)+' EL AÑO NO PUEDE TENER MENOS DE 4 DIGITOS'
+                                                        else:
+                                                            if lista[i+9].tipo == self.tipos.MAYOR_QUE:
+                                                                print("llego")#RESULTADO "AD Almería" VS "Español" TEMPORADA <1979 - 1980>
+                                                                ini = int(lista[i+6].lexema_valido)
+                                                                print(ini)
+                                                                
+                                                                finn = int(lista[i+8].lexema_valido)
+                                                                print(finn)
+                                                                equi1 = str(lista[i+1].lexema_valido)
+                                                                validar_e = equi1.replace(" ","")
+                                                                equi2 = str(lista[i+3].lexema_valido)
+                                                                vaidar_2 = equi2.replace(" ","")
+                                                                si_hay_equipos = False
+                                                                si_hay_temp = False
+                                                                for elemento in elementos_arr:
+                                                                    print(str(elemento.inicio)+"iii")
+                                                                    print(str(elemento.fin)+'fin')
+                                                                    inicio_t = int(elemento.inicio)
+                                                                    final_t = int(elemento.fin)
+                                                                    if ini == inicio_t and finn == final_t:
+                                                                        print("ENCONTRO TEMP")
+                                                                        si_hay_temp = True
+                                                                        if validar_e.upper() == elemento.equipo.nombre.upper():
+                                                                            if vaidar_2.upper() == elemento.equipo2.nombre.upper():
+                                                                                si_hay_equipos = True
+                                                                                goles1 = elemento.equipo.goles
+                                                                                goles2 = elemento.equipo2.goles
+                                                                                respuesta = 'El resultado de este partido fue: '+ str(equi1)+' '+str(goles1)+' - ' + str(equi2)+' '+str(goles2)
+                                                                            
+                                                                        elif validar_e.upper() == elemento.equipo2.nombre.upper():
+                                                                            if vaidar_2.upper() == elemento.equipo.nombre.upper():
+                                                                                si_hay_equipos = True
+                                                                                goles1 = elemento.equipo.goles
+                                                                                goles2 = elemento.equipo2.goles
+                                                                                respuesta = 'El resultado de este partido fue: '+ str(equi1)+' '+str(goles2)+' - ' + str(equi2)+' '+str(goles1)
+                                                                if si_hay_temp == True:
+                                                                    if si_hay_equipos == True:
+                                                                        pass
+                                                                    else:
+                                                                        respuesta = 'ESTOS EQUIPOS NO SE ENFRENTARON EN ESTA TEMPORADA'
+                                                                else: 
+                                                                    respuesta = 'ESTA TEMPORADA NO EXISTE'                
+            return respuesta  
         elif lista[0].tipo == self.tipos.TOP:
             return 'TOP'
         elif lista[0].tipo == self.tipos.ADIOS:
@@ -477,6 +702,15 @@ class Todo():
                 pass'''
     def destruir_ventana(self, ventana):
         ventana.destroy()
+
+    def ordenar_puntos(self, lista):
+        for i in range(1,len(lista)):
+            for j in range(0,len(lista)-i):
+                if(lista[j+1].puntos > lista[j].puntos):
+                    aux=lista[j]
+                    lista[j]=lista[j+1]
+                    lista[j+1]=aux
+        return lista
     
     def generar_partidos_jor(self, elementos, nombre, jornada):
         nombre = nombre + ".html"
@@ -490,7 +724,7 @@ class Todo():
         file.write("</CENTER>")
         file.write("<img src=\"2d.gif\" width=\"300\" height=\"200\" align=right>")
         file.write("<form action=\"\"> ")
-        file.write("<p><b>&nbsp &nbsp &nbsp &nbsp &nbsp &nbspYENIFER ESTER YOC LARIOS &nbsp &nbsp -------->&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 201952336 </b></p>")
+        file.write("<p><b>&nbsp &nbsp &nbsp &nbsp &nbsp &nbspYENIFER ESTER YOC LARIOS &nbsp &nbsp -------->&nbsp &nbsp &nbsp &nbsp 201952336 </b></p>")
         file.write("<br>")
         file.write("<div  id = \"main-container\" >")
         file.write("<b>")
@@ -514,6 +748,44 @@ class Todo():
         startfile(nombre)
         print("")
         print("SE HA CREADO EL REPORTE CON EXITO")
+        print("")   
+
+    def generar_Puntos_temp(self, elementos, nombre, inicio, finall):
+        nombre = nombre + ".html"
+        file = open(nombre, "w")
+        file.write("<HTML>")
+        file.write("<HEAD><TITLE>TEMPORADA "+str(inicio)+"-"+str(finall)+"</TITLE>")
+        file.write("<link rel=\"stylesheet\"  href=\"estilos.css\">")
+        file.write("</head>")
+        file.write("<body>")
+        file.write("<CENTER><H1><b>------------------- PARTIDOS DE LA TEMPORADA &nbsp"+str(inicio)+"-"+str(finall)+" -------------------</b></H1>")
+        file.write("</CENTER>")
+        file.write("<img src=\"2d.gif\" width=\"300\" height=\"200\" align=right>")
+        file.write("<form action=\"\"> ")
+        file.write("<p><b>&nbsp &nbsp &nbsp &nbsp &nbsp &nbspYENIFER ESTER YOC LARIOS &nbsp &nbsp -------->&nbsp &nbsp &nbsp &nbsp 201952336 </b></p>")
+        file.write("<br>")
+        file.write("<div  id = \"main-container\" >")
+        file.write("<b>")
+        file.write("<table>")
+        file.write("<thead>")
+        file.write("<tr>")
+        file.write("<th> EQUIPO   </th><th>PUNTOS OBTENIDOS</th>")
+        file.write("</tr>")
+        file.write("</thead>")#JORNADA 1 TEMPORADA <1979-1980>
+                
+        for elemento in elementos:
+                    file.write("<tr><font size = 12 color = \"white\" >")
+                    file.write("<td>"+str(elemento.nombre)+"</td><td>"+"&nbsp &nbsp &nbsp"+str(elemento.puntos)+"</td>")
+                    file.write("<font size = 12></tr>")
+                
+        file.write("</b>")
+        file.write("</table>")
+        file.write("</div>")
+        file.write("</BODY>\r\n"+ "</HTML>");			
+        file.close()
+        startfile(nombre)
+        print("")
+        print("SE HA CREADO EL ARCHIVO CON EXITO")
         print("")   
 
 
