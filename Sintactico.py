@@ -9,7 +9,8 @@ class Sintactico:
     lista_err_S = []
     
 
-    def __init__(self, lista):
+    def __init__(self, lista, cadena):
+        self.cadena = cadena
         self.errorSintactico = False
         self.lista = lista
         tipos = Token("lexema", -1, -1, -1)
@@ -25,7 +26,7 @@ class Sintactico:
         if self.preanalisis != tipo:
             
             print(str(self.lista[self.posicion].getTipo()), "-- Sintactico", " -- Se esperaba "+str(tipos.getTipo()))
-            nuevo_err = Error_Sintactico(self.lista[self.posicion].getTipo(),tipos.getTipo())
+            nuevo_err = Error_Sintactico(self.lista[self.posicion].getTipo(),tipos.getTipo(),self.cadena)
             self.lista_err_S.append(nuevo_err)
             self.errorSintactico = True
         
