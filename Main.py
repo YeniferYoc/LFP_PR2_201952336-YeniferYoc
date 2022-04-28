@@ -31,11 +31,9 @@ class Todo():
         self.arreglo_elementos = []#LaLigaBot-LFP
         nombre_archivo_csv = "original.csv"
         with open(nombre_archivo_csv, "r", encoding='utf-8') as archivo:
-            
             next(archivo, None)
             for linea in archivo:
                 linea = linea.replace("-",",")
-                
                 lista = linea.split(",")
                 
                 fecha = str(lista[0])
@@ -199,8 +197,6 @@ class Todo():
             boton1 = tkinter.Button(self.ventana_dialog23, text= "Aceptar",width=10, height=3, command = self.extraer_nom_rep_errores)
             boton1.place(x = 120, y = 80) 
             
-
-
         if(opcion == 2):
             print("LIMPIAR LOG DE ERRORES")
             self.general_tokens_err = []
@@ -208,9 +204,7 @@ class Todo():
             print(len(self.general_tokens_err))
             print(len(self.errores_sintac_general))
             mb.showerror("ERROR", "LOG DE ERRORES LIMPIO ")
-
-        
-                                      
+                                    
         if(opcion == 3):
             print("REPORTE DE TOKENS")
             self.ventana_dialog2 = tkinter.Toplevel(self.ventana_principal)
@@ -223,19 +217,20 @@ class Todo():
             boton1 = tkinter.Button(self.ventana_dialog2, text= "Aceptar",width=10, height=3, command = self.extraer_nom_rep)
             boton1.place(x = 120, y = 80) 
                    
-
         if(opcion == 4):
             print("LIMPIAR LOG DE TOKENS")
             self.general_tokens_bien = []
             mb.showerror("ERROR", "LOG DE TOKENS LIMPIO ")
             print(len(self.general_tokens_bien))
-            
-        
+              
         if(opcion == 5):
             print("MANUAL DE USUARIO")
+            startfile("[LFPA]_MANUAL_USUARIO_201952336.pdf")
+
         
         if(opcion == 6):
             print("MANUAL TECNICO")
+            startfile("[LFPA]_MANUAL_TECNICO_201952336.pdf")
         
         if opcion == 7:
             #LOS DATOS DEBEN REESTABLECERSE CADA VEZ QUE SE PRESIONE ENVIAR
@@ -851,7 +846,7 @@ class Todo():
                 
         for elemento in elementos:
                     file.write("<tr><font size = 12 color = \"white\" >")
-                    file.write("<td> "+str(elemento.fecha.dar_todo())+"</td><td>"+str(elemento.equipo.nombre)+"</td><td>"+str(elemento.equipo.goles)+"</td><td>"+str(elemento.equipo2.nombre)+"</td><td>"+str(elemento.equipo2.goles)+"</td>")
+                    file.write("<td> "+str(elemento.fecha)+"</td><td>"+str(elemento.equipo.nombre)+"</td><td>"+str(elemento.equipo.goles)+"</td><td>"+str(elemento.equipo2.nombre)+"</td><td>"+str(elemento.equipo2.goles)+"</td>")
                     file.write("<font size = 12></tr>")
                 
         file.write("</b>")
@@ -927,7 +922,7 @@ class Todo():
                 
         for elemento in elementos:
                     file.write("<tr><font size = 12 color = \"white\" >")
-                    file.write("<td> "+str(elemento.fecha.dar_todo())+"</td><td>"+str(elemento.jornada)+"</td><td>"+str(elemento.equipo.nombre)+"</td><td>"+str(elemento.equipo.goles)+"</td><td>"+str(elemento.equipo2.nombre)+"</td><td>"+str(elemento.equipo2.goles)+"</td>")
+                    file.write("<td> "+str(elemento.fecha)+"</td><td>"+str(elemento.jornada)+"</td><td>"+str(elemento.equipo.nombre)+"</td><td>"+str(elemento.equipo.goles)+"</td><td>"+str(elemento.equipo2.nombre)+"</td><td>"+str(elemento.equipo2.goles)+"</td>")
                     file.write("<font size = 12></tr>")
                 
         file.write("</b>")
@@ -1015,9 +1010,6 @@ class Todo():
         print("SE HA CREADO EL REPORTE CON EXITO")
         print("")   
   
-    
-        
-
 def main(): #METODO PRINCIPAL QUE INVOCA AL MENU2  TOP INFERIOR TEMPORADA <1999-2000> -n 3
 
    app = Todo()
