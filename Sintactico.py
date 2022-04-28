@@ -20,7 +20,6 @@ class Sintactico:
         self.preanalisis = self.lista[self.posicion].tipo
         self.Inicio()
     
-
     def Match(self,tipo):
         tipos = Token("lexema", tipo, -1, -1)
         if self.preanalisis != tipo:
@@ -37,7 +36,6 @@ class Sintactico:
         if self.preanalisis == tipos.ULTIMO:
             print('Se finalizado el analisis sintactico')
 
-    
     def Inicio(self):
         print("*** INICIO DEL ANALISIS SINTACTICO")
         tipos = Token("lexema", -1, -1, -1)
@@ -62,7 +60,6 @@ class Sintactico:
         elif tipos.ADIOS == self.preanalisis:
             self.Adios()
             self.Repetir()
-
 
     def Resultado(self):
         tipos = Token("lexema", -1, -1, -1)
@@ -89,7 +86,6 @@ class Sintactico:
         self.Match(tipos.MAYOR_QUE)
         self.Archivo()
         
-    
     def Goles(self):
         tipos = Token("lexema", -1, -1, -1)
         self.Match(tipos.GOLES)
@@ -174,41 +170,6 @@ class Sintactico:
             if tipos.N == self.preanalisis:
                 self.Match(tipos.N)
                 self.Match(tipos.NUMERO)
-
-
-    '''def Ancho(self):
-        self.Match(TypeToken.ANCHO.name)
-        self.Match(TypeToken.IGUAL.name)
-        self.Match(TypeToken.NUMERO.name)
-        self.Match(TypeToken.PUNTO_Y_COMA.name)
-
-    def Celdas(self):
-        self.Match(TypeToken.CELDAS.name)
-        self.Match(TypeToken.IGUAL.name)
-        self.Match(TypeToken.LLAVE_IZQUIERDA.name)
-        self.Bloque_Celdas()
-        self.Match(TypeToken.LLAVE_DERECHA.name)
-        self.Match(TypeToken.PUNTO_Y_COMA.name)
-
-    def Bloque_Celdas(self):
-        if TypeToken.CORCHETE_IZQUIERDA.name == self.preanalisis:
-            self.Cuerpo_Celda()
-            self.Bloque_Celdas()
-    
-    def Cuerpo_Celda(self):
-        self.Match(TypeToken.CORCHETE_IZQUIERDA.name)
-        self.Match(TypeToken.NUMERO.name)
-        self.Match(TypeToken.COMA.name)
-        self.Match(TypeToken.NUMERO.name)
-        self.Match(TypeToken.COMA.name)
-        print("Estamos en cuerpo celda")
-        self.Boleano()
-        self.Match(TypeToken.COMA.name)
-        self.Match(TypeToken.COLOR.name)
-        self.Match(TypeToken.CORCHETE_DERECHA.name)
-    
-    def Boleano(self):
-        self.Match(TypeToken.BOOLEANO.name)'''
 
     def Repetir(self):
         tipos = Token("lexema", -1, -1, -1)

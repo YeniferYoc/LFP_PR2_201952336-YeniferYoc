@@ -16,21 +16,12 @@
            |<Adios> <Repetir>
            |Epsilon
 
-
-
-
-
 <Resultado>::= tk_resultado tk_cadena tk_VS tk_cadena tk_temporada tk_menorque tk_numero tk_guion tk_numero tk_mayorque
 <Jornada>::= tk_jornada tk_numero tk_temporada tk_menorque tk_numero tk_guion tk_numero tk_mayorque tk_guion tk_f tk_archivo
 <Goles>::= tk_goles <Condicion> tk_temporada tk_menorque tk_numero tk_guion tk_numero tk_mayorque
 <Tabla>::= tk_tabla tk_menorque tk_numero tk_guion tk_numero tk_mayorque tk_guion tk_f tk_archivo
 <Equipo_Jornada>::= tk_partidos tk_cadena tk_temporada tk_menorque tk_numero tk_guion tk_numero tk_mayorque tk_guion tk_f tk_archivo tk_guion tk_ji tk_numero tk_guion tk_jf tk_numero
-<Top>::= tk_top <Cond> tk_temporada tk_menorque tk_numero tk_guion tk_numero tk_mayorque tk_guion tk_n tk_numero
+<Top>::= tk_top tk_letras tk_temporada tk_menorque tk_numero tk_guion tk_numero tk_mayorque tk_guion tk_n tk_numero
 <Adios>::= tk_adios
 
-<Condicion>::= tk_local
-            | tk_visitante
-            | tk_total
 
-<Cond>::= tk_sup
-            | tk_inf

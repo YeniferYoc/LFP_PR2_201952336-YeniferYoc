@@ -270,8 +270,6 @@ class Analizador_Lexico():
                             self.columna += 5
                             continue
                     continue
-            
-
 
     def AgregarToken(self,tipo):
         nuevo_token = Token(self.lexema, tipo, self.fila, self.columna)
