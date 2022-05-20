@@ -1,9 +1,9 @@
 YENIFER ESTER YOC LARIOS 
 201952336
 
-PROYECTO 1 LFP, 
+PROYECTO 3 LFP, 
 
-Agregue el enunciado del proyecto, los archivos de calificacion, hoja de calificación y algunos resultados que arrojaron. 
+Agregue el enunciado del proyecto, los archivos de calificacion Y algunos resultados que arrojaron. 
 Espero les sirva :)
 
 Cierto medio de comunicación de prestigio posee un archivo csv con la información
